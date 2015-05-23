@@ -33,7 +33,7 @@ function getElementsByClassName(node,classname){
 		 }
 	 }
  }
- 
+
  /**
   * 插入某节点之后
   * [newElement] 要插入的新节点
@@ -47,3 +47,15 @@ function getElementsByClassName(node,classname){
 		 parent.insertBefore(newElement.targetElement.nextSibling);
 	 }
  }
+
+
+/**
+ * 兼容老浏览器Object.create
+ */
+var objectCreate = function (arg) {
+	if(!arg){return {};}
+	function obj(){};
+	obj.prototype = arg;
+	return new obj;
+};
+Object.create = Object.create || objectCreate;
