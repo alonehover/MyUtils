@@ -113,3 +113,15 @@ window.addEventListener("onorientationchange" in window ? "orientationchange" : 
 if ('standalone' in navigator && !navigator.standalone && (/iphone|ipod|ipad/gi).test(navigator.platform) && (/Safari/i).test(navigator.appVersion) && window.orientation==90||window.orientation==-90) {
 
  }
+
+/**
+ * 正则验证字符串是否有重复字符
+ */
+ function isIsogram(str) {
+  return !/^.*(.).*\1/i.test(str);
+}
+  // 不区分大小写
+	function isIsogram2(str) {
+	  var strs = str.toLowerCase();
+	    return !/^.*(.).*\1/i.test(str);
+	}
