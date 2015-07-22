@@ -159,3 +159,23 @@ if ('standalone' in navigator && !navigator.standalone && (/iphone|ipod|ipad/gi)
 	  var strs = str.toLowerCase();
 	    return !/^.*(.).*\1/i.test(str);
 	}
+/**
+ *  Javascript组件的基本结构
+ */
+(function(window, undefined) {
+    function JsClassName(cfg) {
+        var config = cfg || {};
+        this.get = function(n) {
+            return config[n];
+        }
+        this.set = function(n, v) {
+            config[n] = v;
+        }
+        this.init();
+    }
+    JsClassName.prototype = {
+        init: function(){},
+        otherMethod: function(){}
+    };
+    window.JsClassName = window.JsClassName || JsClassName;
+})(window);
