@@ -15,7 +15,7 @@ Javascript:
 屏幕可用工作区高度： window.screen.availHeight
 屏幕可用工作区宽度： window.screen.availWidth
 
- 
+navigator.appVersion // 获取浏览器版本
 
 JQuery:
 
