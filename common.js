@@ -238,3 +238,10 @@ function formatCurrency(num) {
     num.substring(num.length-(4*i+3));
     return (((sign)?'':'-') + num + '.' + cents);
 }
+
+/**
+ *  获取url指定参数
+ */
+function getURLParameter(name) {
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+}
