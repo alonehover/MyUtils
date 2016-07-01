@@ -25,3 +25,5 @@ indexOf 老浏览器兼容
 Javascript组件的基本结构
 
 判断数组
+
+获取url的参数
