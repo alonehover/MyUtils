@@ -245,3 +245,18 @@ function formatCurrency(num) {
 function getURLParameter(name) {
   return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
 }
+
+/**
+ * 判断浏览器隐身模式
+ */
+function isLocalStorageSupported() {
+    var testKey = 'test',
+        storage = window.sessionStorage;
+    try {
+        storage.setItem(testKey, 'testValue');
+        storage.removeItem(testKey);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
