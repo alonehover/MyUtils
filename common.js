@@ -260,3 +260,59 @@ function isLocalStorageSupported() {
         return false;
     }
 }
+
+/**
+ *  函数防抖
+ */
+
+
+function debounce(fn, delay) {
+        var timer
+        // 返回一个函数，这个函数会在一个时间区间结束后的 delay 毫秒时执行 fn 函数
+        return function () {
+            var context = this
+            var args = arguments
+
+            // 每次这个返回的函数被调用，就清除定时器，以保证不执行 fn
+            clearTimeout(timer)
+
+            // 当返回的函数被最后一次调用后（也就是用户停止了某个连续的操作），
+            // 再过 delay 毫秒就执行 fn
+            timer = setTimeout(function () {
+                fn.apply(context, args)
+            }, delay)
+        }
+    }
+
+example 2 :
+_.debounce = function(func, wait, immediate) {
+  var timeout, args, context, timestamp, result;
+
+  var later = function() {
+    var last = _.now() - timestamp;
+
+    if (last < wait && last >= 0) {
+      timeout = setTimeout(later, wait - last);
+    } else {
+      timeout = null;
+      if (!immediate) {
+        result = func.apply(context, args);
+        if (!timeout) context = args = null;
+      }
+    }
+  };
+
+  return function() {
+    context = this;
+    args = arguments;
+    timestamp = _.now();
+    var callNow = immediate && !timeout;
+    if (!timeout) timeout = setTimeout(later, wait);
+    if (callNow) {
+      result = func.apply(context, args);
+      context = args = null;
+    }
+
+    return result;
+  };
+};
