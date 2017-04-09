@@ -1,101 +1,147 @@
-var slider = function(opt) {
-    console.log(opt);
-}
+(function() {
+    var TFFSlider = function(dom, opt) {
+        if(!(this instanceof TFFSlider)) return new TFFSlider(dom, opt);
 
-var container = document.querySelector(".swiper-container .swiper-wrapper")
-slider.prototype = {
-    canTouch: function() {
-        return ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch
-    },
-    events: {
-        count: document.querySelectorAll(".swiper-slide").length,
-        data: {
+        var opt = opt || {};
+        var option = {
+            offsetLeft: opt.offsetLeft || 0, // 滑动左偏移量
+            margin: opt.margin || 0, // slider之间的右间距
+            touchMove: opt.touchMove || 60 // 触发翻页的滑动距离
+        };
+
+        var scroll_data = {
             start: { x: 0, y: 0 },
             move: { x: 0, y: 0 },
-            end: { x: 0, y: 0 },
-            scroll_x: 1,
-            index: 0
-        },
-        container: container,
-        handleEvent: function(event) {
-            var self = this; // this指events对象
+            scroll_x: 1 // 是否横向滚动
+        };
 
-            if(event.type == 'touchstart') {
-                self.start(event);
-            }else if(event.type == 'touchmove') {
-                self.move(event);
-            }else if(event.type == 'touchend') {
-                self.end(event);
-            }
-        },
-        start: function(e) {
-            var self = this
-            var touch = e.targetTouches[0]
+        var container = document.querySelector(dom)
+        var wrapper = container.querySelector(".swiper-wrapper")
+        var slider = container.querySelectorAll(".swiper-slide")
 
-            self.data.start = {
-                x: touch.pageX,
-                y: touch.pageY,
-                time: +new Date
-            }
+        var ts = this;
 
-            self.data.move = {
-                x: 0,
-                y: 0,
-            }
+        ts.sliderCount = slider.length;
+        ts.index = 0;
 
-            self.data.scroll_x = 1
-            container.addEventListener("touchmove", this, false)
-            container.addEventListener("touchend", this, false)
-        },
-        move: function(e) {
-            if(e.targetTouches.length > 1 || e.scale && e.scale !== 1) return;
+        var events = {
+            handleEvent: function(event) {
+                var _this = this; // this指events对象
 
-            var self = this;
-            var touch = e.targetTouches[0]
+                if(event.type == 'touchstart') {
+                    _this.start(event);
+                }else if(event.type == 'touchmove') {
+                    _this.move(event);
+                }else if(event.type == 'touchend') {
+                    _this.end(event);
+                }
+            },
+            start: function(e) {
+                var touch = e.targetTouches[0]
 
-            self.data.move = {
-                x: touch.pageX - self.data.start.x,
-                y: touch.pageY - self.data.start.y,
-                time: +new Date
-            }
+                scroll_data.start = {
+                    x: touch.pageX,
+                    y: touch.pageY,
+                    time: +new Date
+                }
 
-            self.data.scroll_x = Math.abs(self.data.move.x) > Math.abs(self.data.move.y) ? 1 : 0;
+                scroll_data.move = {
+                    x: 0,
+                    y: 0,
+                }
 
-            if(self.data.scroll_x) {
-                e.preventDefault()
-                var offset_x = self.data.move.x - (window.innerWidth * self.data.index)
-                console.log("translate3d("+ self.data.move.x +"px, 0, 0)")
-                container.style.transform = "translate3d("+ offset_x +"px, 0, 0)"
-            }
-        },
-        end: function(e) {
-            var self = this;
-            var duration = +new Date - self.data.start.time;
+                scroll_data.scroll_x = 1
 
-            if(self.data.scroll_x) {
-                if(Number(duration) > 10) {
-                    console.log(self.data.move.x);
-                    if(self.data.move.x > 10) {
-                        if(self.data.index !== 0) self.data.index -= 1;
-                    }else if(self.data.move.x < 0){
-                        if(this.data.index !== this.count-1) this.data.index += 1;
+                wrapper.addEventListener("touchmove", this, false)
+                wrapper.addEventListener("touchend", this, false)
+            },
+            move: function(e) {
+                if(e.targetTouches.length > 1 || e.scale && e.scale !== 1) return;
+
+                var touch = e.targetTouches[0]
+
+                scroll_data.move = {
+                    x: touch.pageX - scroll_data.start.x,
+                    y: touch.pageY - scroll_data.start.y,
+                    time: +new Date
+                }
+
+                scroll_data.scroll_x = Math.abs(scroll_data.move.x) > Math.abs(scroll_data.move.y) ? 1 : 0;
+
+                if(scroll_data.scroll_x) {
+                    e.preventDefault()
+                    var offset_x = scroll_data.move.x - (ts.sliderWidth * ts.index)
+                    ts.transform(offset_x, 0)
+                }
+            },
+            end: function(e) {
+                var duration = +new Date - scroll_data.start.time;
+
+                if(scroll_data.scroll_x) {
+                    if(Number(duration) > 10) {
+                        if(scroll_data.move.x > option.touchMove) {
+                            if(ts.index !== 0) ts.index -= 1;
+                        }else if(scroll_data.move.x < -option.touchMove){
+                            if(ts.index !== ts.sliderCount-1) ts.index += 1;
+                        }
                     }
                 }
+
+                var offset_x = -(ts.sliderWidth * ts.index)
+
+                ts.transform(offset_x, 300)
+
+                wrapper.removeEventListener('touchmove', this, false);
+                wrapper.removeEventListener('touchend', this, false);
             }
-
-            var offset_x = -(window.innerWidth * self.data.index)
-            console.log(offset_x)
-
-            container.style.transform = "translate3d("+ offset_x +"px, 0, 0)"
-
-            container.removeEventListener('touchmove', this, false);
-            container.removeEventListener('touchend', this, false);
         }
-    },
-    init: function() {
-        var self = this;
-        if(!!self.canTouch()) {
-            container.addEventListener('touchstart', self.events, false);
+
+        ts.transform = function(width, time) {
+            var move_x = width + option.offsetLeft - (option.margin * ts.index)
+            var move_time = time || 0
+            var timer
+
+            wrapper.style.transform = "translate3d("+ move_x +"px, 0, 0)"
+            wrapper.style.transitionDuration = move_time + "ms"
+
+            if(move_time) {
+                clearTimeout(timer)
+                timer = setTimeout(function() {
+                    wrapper.style.transitionDuration = "0ms"
+                }, move_time)
+            }
+        }
+
+        ts.init = function() {
+            if(!!ts.canTouch()) {
+                ts.resize();
+                wrapper.addEventListener('touchstart', events, false);
+                window.addEventListener('resize', ts.resize, false);
+            }
+        }
+
+        ts.resize = function() {
+            ts.sliderWidth = window.innerWidth - option.offsetLeft * 2;
+            if(option.margin) {
+                for(var i = 0; i < ts.sliderCount; i ++) {
+                    slider[i].style.marginRight = option.margin + "px";
+                    slider[i].style.width = ts.sliderWidth + "px";
+                }
+            }
+            var offset_x = -(ts.sliderWidth * ts.index)
+            ts.transform(offset_x)
+        }
+
+        ts.init()
+
+        return ts
+    }
+
+    TFFSlider.prototype = {
+        canTouch: function() {
+            return ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch
         }
     }
-}
+
+    window.TFFSlider = TFFSlider
+})()
