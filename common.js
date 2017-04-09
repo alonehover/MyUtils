@@ -6,18 +6,18 @@ navigator.appVersion // 获取浏览器版本
  * html5 地理位置定位
  */
 function location(callback){
-	 var data={};
-	 if(!navigator.geolocation){
-			 alert("不支持位置定位");
-	 }else {
-			 navigator.geolocation.getCurrentPosition(function(pos){
-					 data = {
-						 latitude : pos.coords.latitude,
-						 longitude : pos.coords.longitude
-					 }
-					 callback(data);
-			 });
-	 }
+	var data={};
+	if(!navigator.geolocation){
+		alert("不支持位置定位");
+	}else {
+		navigator.geolocation.getCurrentPosition(function(pos){
+			data = {
+				latitude : pos.coords.latitude,
+				longitude : pos.coords.longitude
+			}
+			callback(data);
+		});
+	}
 }
 
 
@@ -218,25 +218,35 @@ function isArrayFn(value){
 
 /**
  * 将数值四舍五入(保留2位小数)后格式化成金额形式
- *
+ * @function Math.abs()  求绝对值
+ * @function Math.floor() 向下取整
  * @param num 数值(Number或者String)
  * @return 金额格式的字符串,如'1,234,567.45'
  * @type String
  */
 function formatCurrency(num) {
-    num = num.toString().replace(/\$|\,/g,'');
-    if(isNaN(num))
-        num = "0";
-    sign = (num == (num = Math.abs(num)));
-    num = Math.floor(num*100+0.50000000001);
-    cents = num%100;
-    num = Math.floor(num/100).toString();
-    if(cents<10)
-    cents = "0" + cents;
-    for (var i = 0; i < Math.floor((num.length-(1+i))/3); i++)
-    num = num.substring(0,num.length-(4*i+3))+','+
-    num.substring(num.length-(4*i+3));
-    return (((sign)?'':'-') + num + '.' + cents);
+    var num_str = num.toString().replace(/\$|\,/g,'');
+
+	if(isNaN(num_str)) return num_str = "0";
+
+    var sign = (num_str == Math.abs(num_str));
+
+    num_str_100 = Math.round(num_str * 100);
+
+    var cents = num_str_100 % 100;
+
+	if(cents < 10){
+		cents = "0" + cents;
+	}
+
+    num_str = Math.floor(num_str).toString();
+
+    for (var i = 0; i < Math.floor((num_str.length - (1 + i)) / 3); i++) {
+		var index = num_str.length - ( 4 * i + 3)
+		num_str = num_str.substring(0, index) + ',' + num_str.substring(index);
+	}
+
+    return ((sign ? '' : '-') + num_str + '.' + cents);
 }
 
 /**
@@ -264,25 +274,23 @@ function isLocalStorageSupported() {
 /**
  *  函数防抖
  */
-
-
 function debounce(fn, delay) {
-        var timer
-        // 返回一个函数，这个函数会在一个时间区间结束后的 delay 毫秒时执行 fn 函数
-        return function () {
-            var context = this
-            var args = arguments
+    var timer
+    // 返回一个函数，这个函数会在一个时间区间结束后的 delay 毫秒时执行 fn 函数
+    return function () {
+        var context = this
+        var args = arguments
 
-            // 每次这个返回的函数被调用，就清除定时器，以保证不执行 fn
-            clearTimeout(timer)
+        // 每次这个返回的函数被调用，就清除定时器，以保证不执行 fn
+        clearTimeout(timer)
 
-            // 当返回的函数被最后一次调用后（也就是用户停止了某个连续的操作），
-            // 再过 delay 毫秒就执行 fn
-            timer = setTimeout(function () {
-                fn.apply(context, args)
-            }, delay)
-        }
+        // 当返回的函数被最后一次调用后（也就是用户停止了某个连续的操作），
+        // 再过 delay 毫秒就执行 fn
+        timer = setTimeout(function () {
+            fn.apply(context, args)
+        }, delay)
     }
+}
 
 example 2 :
 _.debounce = function(func, wait, immediate) {
