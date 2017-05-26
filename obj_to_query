@@ -1,0 +1,12 @@
+// 对象转url search字符串
+const handleParams = params => {
+    if(!params) {
+        return ""
+    }
+
+    let params_arr = []
+    for(let attr in params) {
+        params_arr.push(attr + "=" + params[attr])
+    }
+    return params_arr.join("&")
+}
