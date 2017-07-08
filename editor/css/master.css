@@ -1,0 +1,14 @@
+html, body {
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.editor {
+    margin: 10px;
+    outline: none;
+    border: 1px solid #ddd;
+    height: 600px;
+}
