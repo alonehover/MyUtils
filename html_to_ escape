@@ -1,0 +1,10 @@
+function html2Escape(dom) {
+  return dom.replace(/[<>&"]/g, function(rs) {
+    return {
+      '<': '&lt;',
+      '>': '&gt',
+      '&': '&amp',
+      '\"': '&quot;'
+    }[rs];
+  });
+}
