@@ -1,0 +1,46 @@
+/*  清除浮动  */
+//1、
+.clearfix:after {
+    content:"\200B";
+    display:block;
+    height:0;
+    clear:both;
+}
+.clearfix {*zoom:1;}/*IE/7/6*/
+
+//2、
+.clearfix:before,.clearfix:after{
+    content:"";
+    display:table;
+}
+.clearfix:after{clear:both;}
+.clearfix{
+    *zoom:1;/*IE/7/6*/
+}
+
+//3、
+.clearfix{overflow:auto;_height:1%}  or .clearfix{overflow:hidden;_zoom:1;}
+
+
+/*  css 横竖屏判断  */
+//1、
+ @media (orientation: portrait) { } 横屏  
+ @media (orientation: landscape) { }竖屏 
+//2、
+ <link rel="stylesheet" media="all and (orientation:portrait)" href="portrait.css">横屏  
+ <link rel="stylesheet" media="all and (orientation:landscape)" href="landscape.css">竖屏 
+
+
+
+body{
+    font: 14px/1.5 Consolas,arial,"Microsoft Yahei","Simsun",sans-serif;
+}
+
+
+/*多行省略 -webkit-line-clamp 控制行数*/
+p{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
